@@ -22,14 +22,14 @@ module Reline
   class <<self
     def test_mode(ansi: false)
       @original_iogate = IOGate
-      new_io_gate = ansi ? ANSI.new : GeneralIO.new
-      new_io_gate.set_screen_size(24, 80)
+      @original_screen_size = @original_iogate.get_screen_size
       if ENV['RELINE_TEST_ENCODING']
         encoding = Encoding.find(ENV['RELINE_TEST_ENCODING'])
       else
         encoding = Encoding::UTF_8
       end
-      new_io_gate.reset(encoding: encoding) if new_io_gate.respond_to?(:reset)
+      new_io_gate = ansi ? ANSI.new : GeneralIO.new(encoding: encoding)
+      new_io_gate.set_screen_size(24, 80)
       remove_const('IOGate')
       const_set('IOGate', new_io_gate)
       core.config.instance_variable_set(:@test_mode, true)
@@ -37,6 +37,7 @@ module Reline
     end
 
     def test_reset
+      IOGate.set_screen_size(*@original_screen_size)
       remove_const('IOGate')
       const_set('IOGate', @original_iogate)
       Reline.instance_variable_set(:@core, nil)
