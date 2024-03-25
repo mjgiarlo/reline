@@ -1,6 +1,6 @@
 require 'io/wait'
 
-class Reline::GeneralIO
+class Reline::Dumb
   RESET_COLOR = '' # Do not send color reset sequence
 
   def initialize(encoding: Encoding.default_external)

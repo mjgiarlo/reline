@@ -331,7 +331,7 @@ module Reline
       line_editor.auto_indent_proc = auto_indent_proc
       line_editor.dig_perfect_match_proc = dig_perfect_match_proc
       pre_input_hook&.call
-      unless Reline::IOGate == Reline::GeneralIO
+      unless Reline::IOGate.dumb?
         @dialog_proc_list.each_pair do |name_sym, d|
           line_editor.add_dialog_proc(name_sym, d.dialog_proc, d.context)
         end
@@ -583,11 +583,11 @@ module Reline
   end
 end
 
-require 'reline/io/general_io'
+require 'reline/io/dumb'
 
 Reline::IOGate =
   if ENV['TERM'] == 'dumb'
-    Reline::GeneralIO.new
+    Reline::Dumb.new
   else
     require 'reline/io/ansi'
 
@@ -604,7 +604,7 @@ Reline::IOGate =
       if $stdout.tty?
         Reline::ANSI.new
       else
-        Reline::GeneralIO.new
+        Reline::Dumb.new
       end
     end
   end

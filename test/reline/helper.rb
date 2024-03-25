@@ -28,7 +28,7 @@ module Reline
       else
         encoding = Encoding::UTF_8
       end
-      new_io_gate = ansi ? ANSI.new : GeneralIO.new(encoding: encoding)
+      new_io_gate = ansi ? ANSI.new : Dumb.new(encoding: encoding)
       new_io_gate.set_screen_size(24, 80)
       remove_const('IOGate')
       const_set('IOGate', new_io_gate)
@@ -141,7 +141,7 @@ class Reline::TestCase < Test::Unit::TestCase
       expected.bytesize, byte_pointer,
       <<~EOM)
         <#{expected.inspect} (#{expected.encoding.inspect})> expected but was
-        <#{chunk.inspect} (#{chunk.encoding.inspect})> in <Terminal #{Reline::GeneralIO.new.encoding.inspect}>
+        <#{chunk.inspect} (#{chunk.encoding.inspect})> in <Terminal #{Reline::Dumb.new.encoding.inspect}>
       EOM
   end
 
