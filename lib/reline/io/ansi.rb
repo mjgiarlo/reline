@@ -1,8 +1,7 @@
 require 'io/console'
 require 'io/wait'
-require_relative '../terminfo'
 
-class Reline::ANSI
+class Reline::ANSI < Reline::IO
   RESET_COLOR = "\e[0m"
 
   CAPNAME_KEY_BINDINGS = {
@@ -44,16 +43,8 @@ class Reline::ANSI
     @old_winch_handler = nil
   end
 
-  def dumb?
-    false
-  end
-
   def encoding
     Encoding.default_external
-  end
-
-  def win?
-    false
   end
 
   def set_default_key_bindings(config, allow_terminfo: true)

@@ -7,6 +7,7 @@ require 'reline/key_stroke'
 require 'reline/line_editor'
 require 'reline/history'
 require 'reline/terminfo'
+require 'reline/io'
 require 'reline/face'
 require 'rbconfig'
 
@@ -583,31 +584,8 @@ module Reline
   end
 end
 
-require 'reline/io/dumb'
 
-Reline::IOGate =
-  if ENV['TERM'] == 'dumb'
-    Reline::Dumb.new
-  else
-    require 'reline/io/ansi'
-
-    case RbConfig::CONFIG['host_os']
-    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-      require 'reline/io/windows'
-      io = Reline::Windows.new
-      if io.msys_tty?
-        Reline::ANSI.new
-      else
-        io
-      end
-    else
-      if $stdout.tty?
-        Reline::ANSI.new
-      else
-        Reline::Dumb.new
-      end
-    end
-  end
+Reline::IOGate = Reline::IO.decide_io_gate
 
 Reline::Face.load_initial_configs
 

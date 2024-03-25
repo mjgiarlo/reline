@@ -1,6 +1,6 @@
 require 'fiddle/import'
 
-class Reline::Windows
+class Reline::Windows < Reline::IO
   RESET_COLOR = "\e[0m"
 
   def initialize
@@ -31,10 +31,6 @@ class Reline::Windows
     @WaitForSingleObject = Win32API.new('kernel32', 'WaitForSingleObject', ['L', 'L'], 'L')
 
     @legacy_console = getconsolemode & ENABLE_VIRTUAL_TERMINAL_PROCESSING == 0
-  end
-
-  def dumb?
-    false
   end
 
   def encoding
