@@ -1,8 +1,6 @@
 require 'fiddle/import'
 
 class Reline::Windows < Reline::IO
-  RESET_COLOR = "\e[0m"
-
   def initialize
     @input_buf = []
     @output_buf = []

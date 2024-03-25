@@ -2,8 +2,6 @@ require 'io/console'
 require 'io/wait'
 
 class Reline::ANSI < Reline::IO
-  RESET_COLOR = "\e[0m"
-
   CAPNAME_KEY_BINDINGS = {
     'khome' => :ed_move_to_beg,
     'kend'  => :ed_move_to_end,

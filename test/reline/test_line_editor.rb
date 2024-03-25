@@ -4,9 +4,7 @@ require 'stringio'
 
 class Reline::LineEditor
   class RenderLineDifferentialTest < Reline::TestCase
-    class TestIO
-      RESET_COLOR = "\e[0m"
-
+    class TestIO < Reline::IO
       def move_cursor_column(col)
         @output << "[COL_#{col}]"
       end

@@ -1,6 +1,8 @@
 
 module Reline
   class IO
+    RESET_COLOR = "\e[0m"
+
     def self.decide_io_gate
       if ENV['TERM'] == 'dumb'
         Reline::Dumb.new
@@ -32,6 +34,10 @@ module Reline
 
     def win?
       false
+    end
+
+    def reset_color_sequence
+      self.class::RESET_COLOR
     end
   end
 end

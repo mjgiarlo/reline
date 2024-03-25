@@ -25,10 +25,6 @@ class Reline::Dumb < Reline::IO
     end
   end
 
-  def win?
-    false
-  end
-
   def set_default_key_bindings(_)
   end
 
