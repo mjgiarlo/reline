@@ -22,14 +22,28 @@ module Reline
   class <<self
     def test_mode(ansi: false)
       @original_iogate = IOGate
-      @original_screen_size = @original_iogate.get_screen_size
+
       if ENV['RELINE_TEST_ENCODING']
         encoding = Encoding.find(ENV['RELINE_TEST_ENCODING'])
       else
         encoding = Encoding::UTF_8
       end
-      new_io_gate = ansi ? ANSI.new : Dumb.new(encoding: encoding)
-      new_io_gate.set_screen_size(24, 80)
+
+      if ansi
+        @original_screen_size = @original_iogate.get_screen_size
+        new_io_gate = ANSI.new
+        # Setting ANSI gate's screen size through set_screen_size will also change the tester's stdin's screen size
+        # Let's avoid that side-effect by stubbing the get_screen_size method
+        new_io_gate.define_singleton_method(:get_screen_size) do
+          [24, 80]
+        end
+        new_io_gate.define_singleton_method(:encoding) do
+          encoding
+        end
+      else
+        new_io_gate = Dumb.new(encoding: encoding)
+      end
+
       remove_const('IOGate')
       const_set('IOGate', new_io_gate)
       core.config.instance_variable_set(:@test_mode, true)
@@ -37,7 +51,6 @@ module Reline
     end
 
     def test_reset
-      IOGate.set_screen_size(*@original_screen_size)
       remove_const('IOGate')
       const_set('IOGate', @original_iogate)
       Reline.instance_variable_set(:@core, nil)
